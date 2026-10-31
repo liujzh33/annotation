@@ -1,0 +1,22 @@
+{
+ "instruction": "Open the fridge to get food.",
+ "episodes": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "objects": [
+  {
+   "name": "fridge",
+   "role": "receptacle",
+   "appearance": "white rectangular appliance"
+  },
+  {
+   "name": "cola bottle",
+   "role": "manipulated",
+   "appearance": "red label plastic bottle"
+  }
+ ]
+}

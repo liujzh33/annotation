@@ -1,0 +1,1137 @@
+{
+ "close the fridge": {
+  "structure": {
+   "skill": "close",
+   "object": "fridge",
+   "target": null,
+   "relation": null,
+   "region": null
+  },
+  "variants": [
+   {
+    "text": "Shut the fridge.",
+    "lang": "en",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.928,
+     "max_sim_kept": 0.0
+    }
+   },
+   {
+    "text": "Close fridge.",
+    "lang": "en",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.95,
+     "max_sim_kept": 0.962
+    }
+   },
+   {
+    "text": "Please close the fridge.",
+    "lang": "en",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.94,
+     "max_sim_kept": 0.954
+    }
+   },
+   {
+    "text": "Could you please shut the fridge?",
+    "lang": "en",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.865,
+     "max_sim_kept": 0.914
+    }
+   },
+   {
+    "text": "Close up the fridge.",
+    "lang": "en",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.929,
+     "max_sim_kept": 0.965
+    }
+   },
+   {
+    "text": "Go ahead and shut the fridge.",
+    "lang": "en",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.89,
+     "max_sim_kept": 0.952
+    }
+   },
+   {
+    "text": "Secure the fridge.",
+    "lang": "en",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.818,
+     "max_sim_kept": 0.869
+    }
+   },
+   {
+    "text": "Have the fridge closed.",
+    "lang": "en",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.925,
+     "max_sim_kept": 0.964
+    }
+   },
+   {
+    "text": "Make sure the fridge is shut.",
+    "lang": "en",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.872,
+     "max_sim_kept": 0.951
+    }
+   },
+   {
+    "text": "关上冰箱。",
+    "lang": "zh",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.824,
+     "max_sim_kept": 0.887
+    }
+   },
+   {
+    "text": "合上冰箱。",
+    "lang": "zh",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.779,
+     "max_sim_kept": 0.905
+    }
+   },
+   {
+    "text": "关冰箱。",
+    "lang": "zh",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.834,
+     "max_sim_kept": 0.982
+    }
+   },
+   {
+    "text": "请关上冰箱。",
+    "lang": "zh",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.84,
+     "max_sim_kept": 0.965
+    }
+   },
+   {
+    "text": "麻烦把冰箱关了。",
+    "lang": "zh",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.828,
+     "max_sim_kept": 0.966
+    }
+   },
+   {
+    "text": "把冰箱合上。",
+    "lang": "zh",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.791,
+     "max_sim_kept": 0.971
+    }
+   },
+   {
+    "text": "让冰箱处于关闭状态。",
+    "lang": "zh",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.78,
+     "max_sim_kept": 0.918
+    }
+   }
+  ],
+  "n_generated": 20,
+  "n_rejected": 2,
+  "rejected_examples": [
+   {
+    "text": "Close.",
+    "lang": "en",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": false,
+     "sim_canonical": 0.736,
+     "max_sim_kept": 0.757
+    },
+    "parsed": {
+     "i": 2,
+     "skill": "close",
+     "object": "other",
+     "target": null,
+     "relation": null,
+     "region": null,
+     "referring": null
+    }
+   },
+   {
+    "text": "关。",
+    "lang": "zh",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": false,
+     "sim_canonical": 0.688,
+     "max_sim_kept": 0.763
+    },
+    "parsed": {
+     "i": 13,
+     "skill": "close",
+     "object": "other",
+     "target": null,
+     "relation": null,
+     "region": null,
+     "referring": null
+    }
+   }
+  ]
+ },
+ "open the fridge": {
+  "structure": {
+   "skill": "open",
+   "object": "fridge",
+   "target": null,
+   "relation": null,
+   "region": null
+  },
+  "variants": [
+   {
+    "text": "Fridge open.",
+    "lang": "en",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.932,
+     "max_sim_kept": 0.0
+    }
+   },
+   {
+    "text": "Please open the fridge.",
+    "lang": "en",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.945,
+     "max_sim_kept": 0.927
+    }
+   },
+   {
+    "text": "Hey, crack the fridge open.",
+    "lang": "en",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.882,
+     "max_sim_kept": 0.912
+    }
+   },
+   {
+    "text": "Unlock the fridge.",
+    "lang": "en",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.898,
+     "max_sim_kept": 0.904
+    }
+   },
+   {
+    "text": "Make the fridge open.",
+    "lang": "en",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.93,
+     "max_sim_kept": 0.936
+    }
+   },
+   {
+    "text": "Open the refrigerator.",
+    "lang": "en",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.916,
+     "max_sim_kept": 0.927
+    }
+   },
+   {
+    "text": "Refrigerator, open.",
+    "lang": "en",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.871,
+     "max_sim_kept": 0.918
+    }
+   },
+   {
+    "text": "Could you please open the fridge?",
+    "lang": "en",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.894,
+     "max_sim_kept": 0.937
+    }
+   },
+   {
+    "text": "Do a quick open on the fridge.",
+    "lang": "en",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.878,
+     "max_sim_kept": 0.898
+    }
+   },
+   {
+    "text": "Reveal the fridge contents by opening it.",
+    "lang": "en",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.879,
+     "max_sim_kept": 0.878
+    }
+   },
+   {
+    "text": "Ensure the fridge is in an open state.",
+    "lang": "en",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.844,
+     "max_sim_kept": 0.9
+    }
+   },
+   {
+    "text": "打开冰箱。",
+    "lang": "zh",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.87,
+     "max_sim_kept": 0.916
+    }
+   },
+   {
+    "text": "开冰箱。",
+    "lang": "zh",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.862,
+     "max_sim_kept": 0.978
+    }
+   },
+   {
+    "text": "请打开冰箱。",
+    "lang": "zh",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.877,
+     "max_sim_kept": 0.961
+    }
+   },
+   {
+    "text": "把冰箱弄开点。",
+    "lang": "zh",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.851,
+     "max_sim_kept": 0.947
+    }
+   },
+   {
+    "text": "揭开冰箱门。",
+    "lang": "zh",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.842,
+     "max_sim_kept": 0.954
+    }
+   },
+   {
+    "text": "让冰箱处于打开状态。",
+    "lang": "zh",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.796,
+     "max_sim_kept": 0.914
+    }
+   },
+   {
+    "text": "将冰箱开启。",
+    "lang": "zh",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.829,
+     "max_sim_kept": 0.976
+    }
+   },
+   {
+    "text": "冰箱，开。",
+    "lang": "zh",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.849,
+     "max_sim_kept": 0.945
+    }
+   }
+  ],
+  "n_generated": 20,
+  "n_rejected": 0,
+  "rejected_examples": []
+ },
+ "place the cola bottle left of the fridge": {
+  "structure": {
+   "skill": "place",
+   "object": "cola bottle",
+   "target": "fridge",
+   "relation": "left of",
+   "region": null
+  },
+  "variants": [
+   {
+    "text": "Cola bottle, left of fridge.",
+    "lang": "en",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.861,
+     "max_sim_kept": 0.0
+    }
+   },
+   {
+    "text": "Please place the cola bottle left of the fridge.",
+    "lang": "en",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.95,
+     "max_sim_kept": 0.893
+    }
+   },
+   {
+    "text": "Just put that cola bottle to the left of the fridge, okay?",
+    "lang": "en",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.888,
+     "max_sim_kept": 0.888
+    }
+   },
+   {
+    "text": "Put the cola bottle left of the fridge.",
+    "lang": "en",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.951,
+     "max_sim_kept": 0.952
+    }
+   },
+   {
+    "text": "Ensure the cola bottle is located left of the fridge.",
+    "lang": "en",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.897,
+     "max_sim_kept": 0.905
+    }
+   },
+   {
+    "text": "Position the cola bottle left of the fridge.",
+    "lang": "en",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.936,
+     "max_sim_kept": 0.956
+    }
+   },
+   {
+    "text": "Cola left of fridge.",
+    "lang": "en",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.832,
+     "max_sim_kept": 0.967
+    }
+   },
+   {
+    "text": "Could you please place the cola bottle left of the fridge?",
+    "lang": "en",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.946,
+     "max_sim_kept": 0.959
+    }
+   },
+   {
+    "text": "Hey, toss the cola bottle to the left of the fridge.",
+    "lang": "en",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.881,
+     "max_sim_kept": 0.93
+    }
+   },
+   {
+    "text": "The cola bottle should be placed left of the fridge.",
+    "lang": "en",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.917,
+     "max_sim_kept": 0.943
+    }
+   },
+   {
+    "text": "将可乐瓶放在冰箱左边。",
+    "lang": "zh",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.756,
+     "max_sim_kept": 0.835
+    }
+   },
+   {
+    "text": "可乐瓶，冰箱左。",
+    "lang": "zh",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.691,
+     "max_sim_kept": 0.908
+    }
+   },
+   {
+    "text": "请将可乐瓶放在冰箱左边。",
+    "lang": "zh",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.747,
+     "max_sim_kept": 0.972
+    }
+   },
+   {
+    "text": "就把那瓶可乐搁在冰箱左边呗。",
+    "lang": "zh",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.746,
+     "max_sim_kept": 0.893
+    }
+   },
+   {
+    "text": "把可乐瓶搁在冰箱左边。",
+    "lang": "zh",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.761,
+     "max_sim_kept": 0.986
+    }
+   },
+   {
+    "text": "让可乐瓶位于冰箱左边。",
+    "lang": "zh",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.73,
+     "max_sim_kept": 0.972
+    }
+   },
+   {
+    "text": "放置可乐瓶于冰箱左侧。",
+    "lang": "zh",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.737,
+     "max_sim_kept": 0.987
+    }
+   },
+   {
+    "text": "可乐，冰箱左。",
+    "lang": "zh",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.698,
+     "max_sim_kept": 0.961
+    }
+   }
+  ],
+  "n_generated": 20,
+  "n_rejected": 1,
+  "rejected_examples": [
+   {
+    "text": "Set the cola bottle left of the fridge.",
+    "lang": "en",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.952,
+     "max_sim_kept": 0.992
+    },
+    "parsed": {
+     "i": 9,
+     "skill": "place",
+     "object": "cola bottle",
+     "target": "fridge",
+     "relation": "left of",
+     "region": null,
+     "referring": null
+    }
+   }
+  ]
+ },
+ "pick up the cola bottle": {
+  "structure": {
+   "skill": "pick",
+   "object": "cola bottle",
+   "target": null,
+   "relation": null,
+   "region": null
+  },
+  "variants": [
+   {
+    "text": "Grab the cola bottle.",
+    "lang": "en",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.941,
+     "max_sim_kept": 0.0
+    }
+   },
+   {
+    "text": "Lift the cola bottle.",
+    "lang": "en",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.92,
+     "max_sim_kept": 0.939
+    }
+   },
+   {
+    "text": "Retrieve the cola bottle.",
+    "lang": "en",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.91,
+     "max_sim_kept": 0.946
+    }
+   },
+   {
+    "text": "Please pick up the cola bottle.",
+    "lang": "en",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.962,
+     "max_sim_kept": 0.952
+    }
+   },
+   {
+    "text": "Could you please lift the cola bottle?",
+    "lang": "en",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.897,
+     "max_sim_kept": 0.942
+    }
+   },
+   {
+    "text": "Just grab that cola bottle for me.",
+    "lang": "en",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.906,
+     "max_sim_kept": 0.927
+    }
+   },
+   {
+    "text": "Go on and pick up the cola bottle.",
+    "lang": "en",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.939,
+     "max_sim_kept": 0.951
+    }
+   },
+   {
+    "text": "Pick up cola bottle",
+    "lang": "en",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.948,
+     "max_sim_kept": 0.914
+    }
+   },
+   {
+    "text": "Get the cola bottle.",
+    "lang": "en",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.932,
+     "max_sim_kept": 0.979
+    }
+   },
+   {
+    "text": "The cola bottle should be in your grasp.",
+    "lang": "en",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.897,
+     "max_sim_kept": 0.924
+    }
+   },
+   {
+    "text": "Ensure the cola bottle is lifted.",
+    "lang": "en",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.862,
+     "max_sim_kept": 0.946
+    }
+   },
+   {
+    "text": "拿起可乐瓶。",
+    "lang": "zh",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.798,
+     "max_sim_kept": 0.854
+    }
+   },
+   {
+    "text": "把可乐瓶拿起来。",
+    "lang": "zh",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.792,
+     "max_sim_kept": 0.984
+    }
+   },
+   {
+    "text": "请拿起可乐瓶。",
+    "lang": "zh",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.82,
+     "max_sim_kept": 0.972
+    }
+   },
+   {
+    "text": "麻烦您将可乐瓶拿起。",
+    "lang": "zh",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.798,
+     "max_sim_kept": 0.981
+    }
+   },
+   {
+    "text": "提起来那个可乐瓶。",
+    "lang": "zh",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.788,
+     "max_sim_kept": 0.941
+    }
+   },
+   {
+    "text": "把那个可乐瓶搞到手。",
+    "lang": "zh",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.774,
+     "max_sim_kept": 0.929
+    }
+   },
+   {
+    "text": "提可乐瓶",
+    "lang": "zh",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.693,
+     "max_sim_kept": 0.844
+    }
+   },
+   {
+    "text": "获取可乐瓶",
+    "lang": "zh",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.728,
+     "max_sim_kept": 0.887
+    }
+   },
+   {
+    "text": "使可乐瓶被拿起。",
+    "lang": "zh",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.779,
+     "max_sim_kept": 0.943
+    }
+   },
+   {
+    "text": "确保可乐瓶处于被提起状态。",
+    "lang": "zh",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.731,
+     "max_sim_kept": 0.915
+    }
+   }
+  ],
+  "n_generated": 22,
+  "n_rejected": 0,
+  "rejected_examples": []
+ },
+ "put the cola bottle left of the fridge": {
+  "structure": {
+   "skill": "place",
+   "object": "cola bottle",
+   "target": "fridge",
+   "relation": "left of",
+   "region": null
+  },
+  "variants": [
+   {
+    "text": "Place the cola bottle left of the fridge.",
+    "lang": "en",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.942,
+     "max_sim_kept": 0.0
+    }
+   },
+   {
+    "text": "Put cola bottle left of fridge.",
+    "lang": "en",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.956,
+     "max_sim_kept": 0.973
+    }
+   },
+   {
+    "text": "Please put the cola bottle left of the fridge.",
+    "lang": "en",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.953,
+     "max_sim_kept": 0.955
+    }
+   },
+   {
+    "text": "Just stick the cola bottle to the left of the fridge.",
+    "lang": "en",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.843,
+     "max_sim_kept": 0.895
+    }
+   },
+   {
+    "text": "Position the cola bottle left of the fridge.",
+    "lang": "en",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.9,
+     "max_sim_kept": 0.947
+    }
+   },
+   {
+    "text": "Ensure the cola bottle is located left of the fridge.",
+    "lang": "en",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.871,
+     "max_sim_kept": 0.956
+    }
+   },
+   {
+    "text": "Cola bottle left of fridge.",
+    "lang": "en",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.876,
+     "max_sim_kept": 0.899
+    }
+   },
+   {
+    "text": "Could you place the cola bottle left of the fridge, please?",
+    "lang": "en",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.933,
+     "max_sim_kept": 0.941
+    }
+   },
+   {
+    "text": "Toss the cola bottle to the left of the fridge.",
+    "lang": "en",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.872,
+     "max_sim_kept": 0.935
+    }
+   },
+   {
+    "text": "Set the cola bottle left of the fridge.",
+    "lang": "en",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.949,
+     "max_sim_kept": 0.99
+    }
+   },
+   {
+    "text": "Have the cola bottle situated left of the fridge.",
+    "lang": "en",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.873,
+     "max_sim_kept": 0.978
+    }
+   },
+   {
+    "text": "请将可乐瓶放在冰箱左边。",
+    "lang": "zh",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.711,
+     "max_sim_kept": 0.831
+    }
+   },
+   {
+    "text": "可乐瓶，冰箱左。",
+    "lang": "zh",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.673,
+     "max_sim_kept": 0.896
+    }
+   },
+   {
+    "text": "把那个可乐瓶搁冰箱左边呗。",
+    "lang": "zh",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.744,
+     "max_sim_kept": 0.888
+    }
+   },
+   {
+    "text": "将可乐瓶置放于冰箱的左边。",
+    "lang": "zh",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.707,
+     "max_sim_kept": 0.967
+    }
+   },
+   {
+    "text": "可乐瓶放冰箱左。",
+    "lang": "zh",
+    "style": "terse",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.698,
+     "max_sim_kept": 0.953
+    }
+   },
+   {
+    "text": "帮我把可乐瓶往冰箱左边摆一下。",
+    "lang": "zh",
+    "style": "colloquial",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.691,
+     "max_sim_kept": 0.951
+    }
+   }
+  ],
+  "n_generated": 24,
+  "n_rejected": 7,
+  "rejected_examples": [
+   {
+    "text": "Place the cola bottle on the left side of the fridge.",
+    "lang": "en",
+    "style": "imperative",
+    "filter_scores": {
+     "parse_ok": false,
+     "sim_canonical": 0.844,
+     "max_sim_kept": 0.963
+    },
+    "parsed": {
+     "i": 6,
+     "skill": "place",
+     "object": "cola bottle",
+     "target": "fridge",
+     "relation": "left of",
+     "region": "left side",
+     "referring": null
+    }
+   },
+   {
+    "text": "请把可乐瓶放在冰箱左边。",
+    "lang": "zh",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.713,
+     "max_sim_kept": 0.999
+    },
+    "parsed": {
+     "i": 14,
+     "skill": "place",
+     "object": "cola bottle",
+     "target": "fridge",
+     "relation": "left of",
+     "region": null,
+     "referring": null
+    }
+   },
+   {
+    "text": "安置可乐瓶于冰箱左侧。",
+    "lang": "zh",
+    "style": "synonym_verb",
+    "filter_scores": {
+     "parse_ok": false,
+     "sim_canonical": 0.686,
+     "max_sim_kept": 0.951
+    },
+    "parsed": {
+     "i": 16,
+     "skill": "place",
+     "object": "cola bottle",
+     "target": "fridge",
+     "relation": "left of",
+     "region": "left side",
+     "referring": null
+    }
+   },
+   {
+    "text": "让可乐瓶处于冰箱左侧的位置。",
+    "lang": "zh",
+    "style": "goal_state",
+    "filter_scores": {
+     "parse_ok": false,
+     "sim_canonical": 0.676,
+     "max_sim_kept": 0.953
+    },
+    "parsed": {
+     "i": 17,
+     "skill": "place",
+     "object": "cola bottle",
+     "target": "fridge",
+     "relation": "left of",
+     "region": "left side",
+     "referring": null
+    }
+   },
+   {
+    "text": "麻烦您把可乐瓶放到冰箱左边。",
+    "lang": "zh",
+    "style": "polite",
+    "filter_scores": {
+     "parse_ok": true,
+     "sim_canonical": 0.709,
+     "max_sim_kept": 0.99
+    },
+    "parsed": {
+     "i": 20,
+     "skill": "place",
+     "object": "cola bottle",
+     "target": "fridge",
+     "relation": "left of",
+     "region": null,
+     "referring": null
+    }
+   }
+  ]
+ }
+}

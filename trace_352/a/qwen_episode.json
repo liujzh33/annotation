@@ -1,0 +1,853 @@
+{
+ "episode_id": "agibot_beta/352/0",
+ "source": {
+  "dataset": "agibot_beta",
+  "subset": "352",
+  "episode_index": 0
+ },
+ "task_instruction": "Open the fridge to get food.",
+ "task_success": true,
+ "vlm_final_check": false,
+ "fps": 30.0,
+ "num_frames": 1172,
+ "views": [
+  "head",
+  "wrist_left",
+  "wrist_right"
+ ],
+ "single_step": false,
+ "subtasks": [
+  {
+   "id": 0,
+   "skill": "open",
+   "object": "fridge",
+   "target": null,
+   "region": null,
+   "relation": null,
+   "arm": "left",
+   "assist_arm": null,
+   "canonical_text": "open the fridge",
+   "t_start": 45,
+   "t_contact": null,
+   "t_effect": 289,
+   "t_end": 599,
+   "status": "success",
+   "status_votes": null,
+   "memory_text": "the fridge is open",
+   "provenance": {
+    "t_start": "snap_kinematic",
+    "t_end": "rest_after_lift",
+    "t_effect": "vlm_bsearch"
+   },
+   "effect_verified": true,
+   "vlm_agrees": null,
+   "coarse": [
+    2.19,
+    13.12
+   ],
+   "keyframes": {
+    "t_start": {
+     "frame": 45,
+     "views": {
+      "head": {
+       "object_bbox": [
+        50.0,
+        0.0,
+        278.0,
+        238.0
+       ],
+       "object_score": 0.459,
+       "target_bbox": null,
+       "target_score": null,
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    },
+    "t_effect": {
+     "frame": 289,
+     "views": {
+      "head": {
+       "object_bbox": [
+        52.0,
+        0.9,
+        278.0,
+        239.0
+       ],
+       "object_score": 0.414,
+       "target_bbox": null,
+       "target_score": null,
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    },
+    "t_end": {
+     "frame": 599,
+     "views": {
+      "head": {
+       "object_bbox": [
+        74.0,
+        0.0,
+        320.0,
+        239.0
+       ],
+       "object_score": 0.898,
+       "target_bbox": null,
+       "target_score": null,
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    }
+   },
+   "grounding": {
+    "object_found_ratio_head": 1.0,
+    "cross_iou": 0.889,
+    "anchor_source": "sam3_text",
+    "arbitrated": null,
+    "qwen_fallback": 0,
+    "ambiguous": 0,
+    "qwen_choice": 0,
+    "projected": 0,
+    "detector_prompt": {
+     "fridge": "fridge"
+    }
+   },
+   "scene_variants": []
+  },
+  {
+   "id": 1,
+   "skill": "pick",
+   "object": "cola bottle",
+   "target": null,
+   "region": null,
+   "relation": null,
+   "arm": "left",
+   "assist_arm": null,
+   "canonical_text": "pick up the cola bottle",
+   "t_start": 599,
+   "t_contact": 610,
+   "t_effect": 666,
+   "t_end": 869,
+   "status": "success",
+   "status_votes": null,
+   "memory_text": "the cola bottle is held by the left gripper",
+   "provenance": {
+    "t_contact": "gripper_close",
+    "t_effect": "kinematic_rule",
+    "t_start": "vlm_coarse",
+    "t_end": "rest_after_lift"
+   },
+   "effect_verified": true,
+   "vlm_agrees": false,
+   "coarse": [
+    13.12,
+    25.29
+   ],
+   "keyframes": {
+    "t_start": {
+     "frame": 599,
+     "views": {
+      "head": {
+       "object_bbox": [
+        192.0,
+        13.1,
+        222.0,
+        145.0
+       ],
+       "object_score": 0.719,
+       "target_bbox": null,
+       "target_score": null,
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    },
+    "t_contact": {
+     "frame": 610,
+     "views": {
+      "head": {
+       "object_bbox": [
+        192.0,
+        13.6,
+        222.0,
+        144.0
+       ],
+       "object_score": 0.703,
+       "target_bbox": null,
+       "target_score": null,
+       "contact_points": [
+        [
+         204.9,
+         107.2
+        ],
+        [
+         207.2,
+         84.9
+        ]
+       ],
+       "contact_source": "mask_intersection",
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    },
+    "t_effect": {
+     "frame": 666,
+     "views": {
+      "head": {
+       "object_bbox": [
+        192.0,
+        0.0,
+        225.0,
+        118.0
+       ],
+       "object_score": 0.855,
+       "target_bbox": null,
+       "target_score": null,
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    },
+    "t_end": {
+     "frame": 869,
+     "views": {
+      "head": {
+       "object_bbox": null,
+       "object_score": null,
+       "target_bbox": null,
+       "target_score": null,
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    }
+   },
+   "grounding": {
+    "object_found_ratio_head": 0.75,
+    "cross_iou": 0.763,
+    "anchor_source": "sam3_text",
+    "arbitrated": null,
+    "qwen_fallback": 0,
+    "ambiguous": 1,
+    "qwen_choice": 1,
+    "projected": 0,
+    "detector_prompt": {
+     "cola bottle": "cola bottle"
+    }
+   },
+   "scene_variants": []
+  },
+  {
+   "id": 2,
+   "skill": "place",
+   "object": "cola bottle",
+   "target": "fridge",
+   "region": null,
+   "relation": "next to",
+   "arm": "left",
+   "assist_arm": null,
+   "canonical_text": "place the cola bottle next to the fridge",
+   "t_start": 910,
+   "t_contact": null,
+   "t_effect": 921,
+   "t_end": 942,
+   "status": "success",
+   "status_votes": [
+    false,
+    true
+   ],
+   "memory_text": "the cola bottle is next to the fridge",
+   "provenance": {
+    "t_effect": "gripper_open",
+    "t_start": "motion_onset",
+    "t_end": "release_plus_settle"
+   },
+   "effect_verified": true,
+   "vlm_agrees": true,
+   "coarse": [
+    25.29,
+    38.07
+   ],
+   "keyframes": {
+    "t_start": {
+     "frame": 910,
+     "views": {
+      "head": {
+       "object_bbox": [
+        34.8,
+        131.0,
+        74.5,
+        212.0
+       ],
+       "object_score": 0.691,
+       "target_bbox": [
+        50.5,
+        0.0,
+        320.0,
+        239.0
+       ],
+       "target_score": 0.957,
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    },
+    "t_effect": {
+     "frame": 921,
+     "views": {
+      "head": {
+       "object_bbox": [
+        34.8,
+        131.0,
+        74.5,
+        212.0
+       ],
+       "object_score": 0.887,
+       "target_bbox": [
+        50.0,
+        0.0,
+        320.0,
+        238.0
+       ],
+       "target_score": 0.961,
+       "contact_points": [
+        [
+         49.8,
+         175.9
+        ],
+        [
+         35.6,
+         156.7
+        ]
+       ],
+       "contact_source": "mask_intersection",
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    },
+    "t_end": {
+     "frame": 942,
+     "views": {
+      "head": {
+       "object_bbox": [
+        35.5,
+        131.0,
+        74.5,
+        212.0
+       ],
+       "object_score": 0.941,
+       "target_bbox": [
+        50.0,
+        0.5,
+        304.0,
+        238.0
+       ],
+       "target_score": 0.965,
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    }
+   },
+   "grounding": {
+    "object_found_ratio_head": 1.0,
+    "cross_iou": 0.956,
+    "anchor_source": "sam3_text",
+    "arbitrated": null,
+    "qwen_fallback": 0,
+    "ambiguous": 0,
+    "qwen_choice": 0,
+    "projected": 0,
+    "detector_prompt": {
+     "cola bottle": "cola bottle",
+     "fridge": "fridge"
+    }
+   },
+   "scene_variants": []
+  },
+  {
+   "id": 3,
+   "skill": "close",
+   "object": "fridge",
+   "target": null,
+   "region": null,
+   "relation": null,
+   "arm": "right",
+   "assist_arm": null,
+   "canonical_text": "close the fridge",
+   "t_start": 928,
+   "t_contact": null,
+   "t_effect": 1017,
+   "t_end": 1142,
+   "status": "success",
+   "status_votes": null,
+   "memory_text": "the fridge is closed",
+   "provenance": {
+    "t_start": "snap_kinematic",
+    "t_end": "rest_after_lift",
+    "t_effect": "vlm_bsearch"
+   },
+   "effect_verified": true,
+   "vlm_agrees": null,
+   "coarse": [
+    31.0,
+    37.0
+   ],
+   "keyframes": {
+    "t_start": {
+     "frame": 928,
+     "views": {
+      "head": {
+       "object_bbox": [
+        51.2,
+        0.0,
+        318.0,
+        239.0
+       ],
+       "object_score": 0.949,
+       "target_bbox": null,
+       "target_score": null,
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    },
+    "t_effect": {
+     "frame": 1017,
+     "views": {
+      "head": {
+       "object_bbox": [
+        50.0,
+        0.5,
+        225.0,
+        238.0
+       ],
+       "object_score": 0.75,
+       "target_bbox": null,
+       "target_score": null,
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    },
+    "t_end": {
+     "frame": 1142,
+     "views": {
+      "head": {
+       "object_bbox": [
+        50.5,
+        0.9,
+        225.0,
+        239.0
+       ],
+       "object_score": 0.746,
+       "target_bbox": null,
+       "target_score": null,
+       "tile": "head",
+       "tile_box": [
+        0,
+        0,
+        320,
+        240
+       ]
+      }
+     }
+    }
+   },
+   "grounding": {
+    "object_found_ratio_head": 1.0,
+    "cross_iou": 0.796,
+    "anchor_source": "sam3_text",
+    "arbitrated": null,
+    "qwen_fallback": 0,
+    "ambiguous": 0,
+    "qwen_choice": 0,
+    "projected": 0,
+    "detector_prompt": {
+     "fridge": "fridge"
+    }
+   },
+   "scene_variants": []
+  }
+ ],
+ "composite_subtasks": [
+  {
+   "skill": "open",
+   "object": "fridge",
+   "target": null,
+   "region": null,
+   "relation": null,
+   "arm": "left",
+   "canonical_text": "open the fridge",
+   "atomic_ids": [
+    0
+   ],
+   "t_start": 45,
+   "t_contact": null,
+   "t_effect": 289,
+   "t_end": 599,
+   "status": "success",
+   "id": 0,
+   "memory_text": "the fridge is open",
+   "keyframe_refs": {
+    "t_start": [
+     0,
+     "t_start"
+    ],
+    "t_contact": [
+     0,
+     "t_contact"
+    ],
+    "t_effect": [
+     0,
+     "t_effect"
+    ],
+    "t_end": [
+     0,
+     "t_end"
+    ]
+   }
+  },
+  {
+   "skill": "put",
+   "object": "cola bottle",
+   "target": "fridge",
+   "region": null,
+   "relation": "next to",
+   "arm": "left",
+   "canonical_text": "put the cola bottle next to the fridge",
+   "atomic_ids": [
+    1,
+    2
+   ],
+   "t_start": 599,
+   "t_contact": 610,
+   "t_effect": 921,
+   "t_end": 942,
+   "status": "success",
+   "id": 1,
+   "memory_text": "the cola bottle is next to the fridge",
+   "keyframe_refs": {
+    "t_start": [
+     1,
+     "t_start"
+    ],
+    "t_contact": [
+     1,
+     "t_contact"
+    ],
+    "t_effect": [
+     2,
+     "t_effect"
+    ],
+    "t_end": [
+     2,
+     "t_end"
+    ]
+   }
+  },
+  {
+   "skill": "close",
+   "object": "fridge",
+   "target": null,
+   "region": null,
+   "relation": null,
+   "arm": "right",
+   "canonical_text": "close the fridge",
+   "atomic_ids": [
+    3
+   ],
+   "t_start": 928,
+   "t_contact": null,
+   "t_effect": 1017,
+   "t_end": 1142,
+   "status": "success",
+   "id": 2,
+   "memory_text": "the fridge is closed",
+   "keyframe_refs": {
+    "t_start": [
+     3,
+     "t_start"
+    ],
+    "t_contact": [
+     3,
+     "t_contact"
+    ],
+    "t_effect": [
+     3,
+     "t_effect"
+    ],
+    "t_end": [
+     3,
+     "t_end"
+    ]
+   }
+  }
+ ],
+ "per_frame_file": "frames/000000.parquet",
+ "qa": {
+  "sequence_agreement": 1.0,
+  "sequence_near_agreement": 1.0,
+  "gripper_consistent": false,
+  "retried_with_hint": true,
+  "grip_repaired": 0,
+  "rescued": 0,
+  "decompose_samples": [
+   [
+    "open the fridge",
+    "pick up the cola bottle",
+    "place the cola bottle in front of the fridge",
+    "close the fridge"
+   ],
+   [
+    "open the fridge",
+    "pick up the cola bottle",
+    "place the cola bottle next to the bottom left corner of the fridge",
+    "close the fridge"
+   ],
+   [
+    "open the fridge",
+    "pick up the cola bottle",
+    "place the cola bottle next to the fridge",
+    "close the fridge"
+   ],
+   [
+    "open the fridge",
+    "pick up the cola bottle",
+    "place the cola bottle in front of the fridge",
+    "close the fridge"
+   ],
+   [
+    "open the fridge",
+    "pick up the cola bottle",
+    "place the cola bottle left of the fridge",
+    "close the fridge"
+   ],
+   [
+    "open the fridge",
+    "pick up the cola bottle",
+    "place the cola bottle next to the fridge",
+    "close the fridge"
+   ]
+  ],
+  "arm_mode": {
+   "right": "vlm_snap",
+   "left": "vlm_snap"
+  },
+  "unexplained_grasps_s": {
+   "right": [],
+   "left": []
+  },
+  "hard_failures": [],
+  "soft_flags": [
+   "arm_not_gripper_rule:['right', 'left']"
+  ],
+  "metrics": {
+   "n_subtasks": 4,
+   "object_found_ratio_head_mean": 0.938,
+   "cross_iou_mean": 0.851,
+   "vlm_disagrees_with_kinematic_times": [
+    1
+   ],
+   "progress_final": 1.0
+  },
+  "usable_fields": [
+   "subtask_text",
+   "times",
+   "plan",
+   "progress",
+   "memory",
+   "keyframes_2d",
+   "instruction_variants"
+  ]
+ },
+ "cost": {
+  "prompt_tokens": 28281,
+  "vlm_calls_stage4": 21,
+  "stage_s": {
+   "s0_s1": 0.02,
+   "s2": 12.91,
+   "s3": 2.72,
+   "s4": 5.48,
+   "s5_s6": 10.2,
+   "s7_scene": 0.0,
+   "s8_write": 0.03,
+   "viz": 0.56
+  },
+  "wall_s": 31.9,
+  "vlm_by_caller": {
+   "__main__.chat_json": {
+    "calls": 34,
+    "prompt": 37466,
+    "completion": 1839
+   }
+  },
+  "vlm_prompt_tokens_all": 37466
+ },
+ "pipeline_version": "trial-0.5",
+ "instruction_variants_file": "instructions.json",
+ "grade": "B",
+ "semantic_progress": {
+  "fill": "linear",
+  "grip_boost": 2.0,
+  "milestones": [
+   {
+    "id": 0,
+    "skill": "open",
+    "arm": "left",
+    "mode": "motion",
+    "start": 36,
+    "done": 289,
+    "done_from": "t_effect",
+    "weight": 0.1667,
+    "gripper_actuated": false,
+    "pieces": [
+     {
+      "name": "linear",
+      "start": 36,
+      "end": 289,
+      "frac": 1.0,
+      "mode": "time"
+     }
+    ]
+   },
+   {
+    "id": 1,
+    "skill": "pick",
+    "arm": "left",
+    "mode": "grasp",
+    "start": 289,
+    "done": 666,
+    "done_from": "t_effect",
+    "weight": 0.3333,
+    "gripper_actuated": true,
+    "pieces": [
+     {
+      "name": "linear",
+      "start": 289,
+      "end": 666,
+      "frac": 1.0,
+      "mode": "time"
+     }
+    ]
+   },
+   {
+    "id": 2,
+    "skill": "place",
+    "arm": "left",
+    "mode": "release",
+    "start": 666,
+    "done": 921,
+    "done_from": "t_effect",
+    "weight": 0.3333,
+    "gripper_actuated": true,
+    "pieces": [
+     {
+      "name": "linear",
+      "start": 666,
+      "end": 921,
+      "frac": 1.0,
+      "mode": "time"
+     }
+    ]
+   },
+   {
+    "id": 3,
+    "skill": "close",
+    "arm": "right",
+    "mode": "motion",
+    "start": 141,
+    "done": 1017,
+    "done_from": "t_effect",
+    "weight": 0.1667,
+    "gripper_actuated": false,
+    "pieces": [
+     {
+      "name": "linear",
+      "start": 141,
+      "end": 1017,
+      "frac": 1.0,
+      "mode": "time"
+     }
+    ]
+   }
+  ],
+  "done_before": [],
+  "y0": 0.0,
+  "retract": null,
+  "final": 1.0
+ },
+ "coordinates": {
+  "frame": "tshape",
+  "layout": "dual_arm_320x360",
+  "size": [
+   320,
+   360
+  ],
+  "upscale": 1.0
+ }
+}
