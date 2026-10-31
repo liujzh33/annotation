@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>标注复核</title>
+<style>
+  :root { --ok:#43a047; --bad:#e53935; --left:#1e88e5; --right:#fb8c00; --line:#ddd; --muted:#777; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:13px/1.45 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif; color:#222; display:flex; height:100vh; overflow:hidden; }
+  #side { width:270px; border-right:1px solid var(--line); display:flex; flex-direction:column; background:#fafafa; }
+  #side h1 { font-size:15px; margin:10px 12px 6px; }
+  #side select, #side input { width:100%; margin:2px 0; padding:3px; font-size:12px; }
+  .filters { padding:0 12px; }
+  #count { padding:4px 12px; color:var(--muted); font-size:12px; }
+  #eplist { overflow-y:auto; flex:1; }
+  .ep { padding:5px 12px; border-left:4px solid transparent; cursor:pointer; border-bottom:1px solid #eee; }
+  .ep:hover { background:#f0f4ff; }
+  .ep.sel { background:#e3ecff; }
+  .ep .t { font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .gA { border-left-color:#43a047; } .gB { border-left-color:#fdd835; } .gC { border-left-color:#e53935; }
+  .badge { display:inline-block; padding:0 6px; border-radius:8px; font-size:11px; color:#fff; margin-right:4px; }
+  .bA { background:#43a047; } .bB { background:#c0a000; } .bC { background:#e53935; }
+  .bok { background:var(--ok); } .bbad { background:var(--bad); } .bgray { background:#999; } .brev { background:#5e35b1; }
+  #main { flex:1; overflow-y:auto; padding:10px 16px 40px; }
+  #hdr h2 { font-size:15px; margin:0 0 4px; }
+  #hdr .flags { font-size:12px; color:var(--muted); }
+  #top { display:flex; gap:12px; margin-top:8px; align-items:flex-start; }
+  #videos { flex:0 0 auto; }
+  #headwrap { position:relative; background:#000; }
+  #vhead { display:block; max-height:360px; max-width:640px; }
+  #ov { position:absolute; left:0; top:0; pointer-events:none; }
+  #wrists { display:flex; gap:4px; margin-top:4px; }
+  #wrists video { height:150px; background:#000; }
+  #wrists .wv { font-size:11px; color:var(--muted); text-align:center; }
+  #state { flex:1; min-width:260px; font-size:13px; }
+  #state .arm { margin-bottom:8px; padding:6px 8px; border-radius:4px; background:#f6f6f6; }
+  #state .big { font-size:22px; font-weight:600; }
+  #state ol { margin:2px 0 0 18px; padding:0; }
+  #ctrl { margin:8px 0 4px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  #ctrl .hint { color:var(--muted); font-size:11px; }
+  #tlwrap { position:relative; }
+  #tl { width:100%; display:block; cursor:crosshair; }
+  #tip { position:fixed; pointer-events:none; background:rgba(30,30,30,.92); color:#fff; padding:5px 8px; border-radius:4px; font-size:12px; display:none; max-width:420px; z-index:10; }
+  h3 { font-size:14px; margin:14px 0 6px; }
+  table { border-collapse:collapse; width:100%; font-size:12px; }
+  th, td { border-bottom:1px solid #eee; padding:3px 5px; text-align:left; vertical-align:top; }
+  th { background:#f4f4f4; position:sticky; top:0; }
+  tr.cur td { background:#fff8e1; }
+  tr.selrow td { outline:1px solid #90caf9; }
+  td.tm { cursor:pointer; color:#1565c0; white-space:nowrap; }
+  td.tm:hover { text-decoration:underline; }
+  .armL { color:var(--left); font-weight:600; } .armR { color:var(--right); font-weight:600; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); }
+  .rv button { font-size:11px; padding:1px 6px; margin-right:2px; border:1px solid #bbb; background:#fff; border-radius:3px; cursor:pointer; }
+  .rv button.on.okb { background:var(--ok); color:#fff; border-color:var(--ok); }
+  .rv button.on.fixb { background:var(--bad); color:#fff; border-color:var(--bad); }
+  .rv input { width:140px; font-size:11px; }
+  #kfs { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+  #kfs figure { margin:0; text-align:center; font-size:11px; cursor:pointer; }
+  #kfs img { height:170px; border:1px solid #ccc; display:block; }
+  details { margin-top:6px; } summary { cursor:pointer; color:#1565c0; }
+  .muted { color:var(--muted); }
+  .legend span { margin-right:12px; font-size:11px; }
+  .sw { display:inline-block; width:14px; height:3px; vertical-align:middle; margin-right:3px; }
+</style>
+</head>
+<body>
+<div id="side">
+  <h1>标注复核</h1>
+  <div class="filters">
+    <select id="run"></select>
+    <select id="fsub"><option value="">全部子集</option></select>
+    <div style="display:flex;gap:4px">
+      <select id="fgrade"><option value="">全部等级</option><option>A</option><option>B</option><option>C</option></select>
+      <select id="fsucc"><option value="">成败</option><option value="1">任务成功</option><option value="0">任务失败</option></select>
+    </div>
+    <input id="fq" placeholder="搜索指令 / 编号">
+  </div>
+  <div id="count"></div>
+  <div id="eplist"></div>
+</div>
+<div id="main">
+  <div id="hdr"><h2 class="muted">左侧选择一条 episode</h2></div>
+  <div id="top" style="display:none">
+    <div id="videos">
+      <div id="headwrap"><video id="vhead" muted playsinline preload="auto"></video><canvas id="ov"></canvas></div>
+      <div id="wrists"></div>
+    </div>
+    <div id="state"></div>
+  </div>
+  <div id="ctrl" style="display:none">
+    <button id="play">播放</button>
+    <select id="rate"><option>0.5</option><option selected>1</option><option>2</option><option>4</option></select>
+    <span id="now"></span>
+    <label><input type="checkbox" id="showbox" checked> 关键帧框</label>
+    <span class="hint">空格 播放/暂停 · ←/→ 1 秒 · , / . 逐帧 · 点时间轴跳转 · 点子任务条看关键帧</span>
+  </div>
+  <div id="tlwrap"><canvas id="tl"></canvas></div>
+  <div class="legend" id="legend" style="display:none">
+    <span><b>▼</b> 接触 t_contact</span><span><b style="color:#000">◆</b> 生效 t_effect</span>
+    <span><i class="sw" style="background:var(--ok)"></i>成功</span><span><i class="sw" style="background:var(--bad)"></i>失败</span>
+    <span><i class="sw" style="background:#000"></i>语义进度</span><span><i class="sw" style="background:#999"></i>旧进度（等权按时间）</span>
+    <span><i class="sw" style="background:#26a69a"></i>收回段</span>
+    <span><i class="sw" style="background:var(--left)"></i>左手</span><span><i class="sw" style="background:var(--right)"></i>右手</span>
+    <span class="muted">浅色底 = 夹爪闭合区间</span>
+  </div>
+  <div id="detail"></div>
+</div>
+<div id="tip"></div>
+
+<script src="index_data.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ARMC = {left:"#1e88e5", right:"#fb8c00"};
+const ARMN = {left:"左手", right:"右手"};
+const MOM = ["t_start","t_contact","t_effect","t_end"];
+const MOMN = {t_start:"开始", t_contact:"接触", t_effect:"生效", t_end:"结束"};
+let EPS = [], D = null, CUR = null, REV = {}, selSid = null, layout = null, revTimer = null;
+
+async function api(u) { const r = await fetch(u); if (!r.ok) throw new Error(await r.text()); return r.json(); }
+const q = (o) => Object.entries(o).map(([k,v]) => k + "=" + encodeURIComponent(v)).join("&");
+
+// Offline package (review/export.py): data comes from <script> files so the page also works from file://,
+// reviews stay in localStorage and can be downloaded as JSON.
+const STATIC = !!window.STATIC_INDEX;
+const LS = (() => {
+  try { const s = window.localStorage; s.setItem("_t", "1"); s.removeItem("_t"); return s; }
+  catch (e) {
+    const m = new Map();
+    return {getItem: k => m.has(k) ? m.get(k) : null, setItem: (k, v) => m.set(k, String(v)), key: i => [...m.keys()][i], get length() { return m.size; }};
+  }
+})();
+const key = c => `${c.run}__${c.subset}__${c.idx}`;
+const loadScript = src => new Promise((ok, bad) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = () => bad(new Error("missing " + src)); document.head.appendChild(s); });
+const store = {
+  runs: () => STATIC ? Promise.resolve(STATIC_INDEX.runs.map(r => ({run: r.run, n: r.episodes.length}))) : api("/api/runs"),
+  episodes: run => {
+    if (!STATIC) return api("/api/episodes?" + q({run}));
+    const eps = STATIC_INDEX.runs.find(r => r.run === run).episodes;
+    eps.forEach(e => { const rv = JSON.parse(LS.getItem("review:" + key({run, ...e})) || "{}"); const v = Object.values(rv.subtasks || {}).map(x => x.status); e.review_done = !!rv.done; e.review_fix = v.filter(x => x === "fix").length; });
+    return Promise.resolve(eps);
+  },
+  episode: async c => { if (!STATIC) return api("/api/episode?" + q(c)); window.__EP = null; await loadScript(`data/${key(c)}.js`); return window.__EP; },
+  review: c => STATIC ? Promise.resolve(JSON.parse(LS.getItem("review:" + key(c)) || "{}")) : api("/api/review?" + q(c)),
+  save: (c, r) => STATIC ? Promise.resolve(LS.setItem("review:" + key(c), JSON.stringify(r)))
+    : fetch("/api/review?" + q(c), {method: "POST", body: JSON.stringify(r)}),
+  video: (c, view) => STATIC ? `media/${key(c)}/${view}.mp4` : "/video?" + q({...c, view}),
+  kf: (c, sid, moment, view) => STATIC ? `media/${key(c)}/kf_${sid}_${moment}_${view}.jpg` : "/kf?" + q({...c, sid, moment, view}),
+};
+function exportReviews() {
+  const out = {};
+  for (let i = 0; i < LS.length; i++) { const k = LS.key(i); if (k.startsWith("review:")) out[k.slice(7)] = JSON.parse(LS.getItem(k)); }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 1)], {type: "application/json"}));
+  a.download = "reviews.json"; a.click();
+}
+
+// ---------------------------------------------------------------- sidebar
+async function loadRuns() {
+  if (STATIC) $("#side h1").innerHTML = `标注复核 <button style="font-size:11px" onclick="exportReviews()">导出复核结果</button>`;
+  const runs = await store.runs();
+  const sel = $("#run");
+  sel.innerHTML = runs.map(r => `<option value="${esc(r.run)}">${esc(r.run)} (${r.n})</option>`).join("");
+  const want = new URLSearchParams(location.hash.slice(1)).get("run");
+  const pref = want || ["steady_tshape_final", "robocoin_v6", "droid_raw"].find(x => runs.some(r => r.run === x));
+  if (pref) sel.value = pref;
+  await loadEpisodes();
+}
+async function loadEpisodes() {
+  EPS = await store.episodes($("#run").value);
+  const subs = [...new Set(EPS.map(e => e.subset))];
+  $("#fsub").innerHTML = `<option value="">全部子集 (${subs.length})</option>` + subs.map(s => `<option>${esc(s)}</option>`).join("");
+  renderList();
+  const h = new URLSearchParams(location.hash.slice(1));
+  if (h.get("subset") && h.get("idx") && h.get("run") === $("#run").value) openEp(h.get("subset"), +h.get("idx"));
+}
+function renderList() {
+  const g = $("#fgrade").value, s = $("#fsucc").value, sub = $("#fsub").value, t = $("#fq").value.toLowerCase();
+  const list = EPS.filter(e => (!g || e.grade === g) && (!s || String(+!!e.task_success) === s) && (!sub || e.subset === sub)
+    && (!t || (e.instruction || "").toLowerCase().includes(t) || `${e.subset}/${e.idx}`.includes(t)));
+  $("#count").textContent = `${list.length} / ${EPS.length} 条`;
+  $("#eplist").innerHTML = list.map(e => `
+    <div class="ep g${e.grade} ${CUR && CUR.subset === e.subset && CUR.idx === e.idx ? "sel" : ""}" data-s="${esc(e.subset)}" data-i="${e.idx}">
+      <span class="badge b${e.grade}">${e.grade}</span><span class="badge ${e.task_success ? "bok" : "bbad"}">${e.task_success ? "成功" : "失败"}</span>
+      <b>${esc(e.subset)}/${e.idx}</b> <span class="muted">${e.n} 步${e.n_failed ? `，${e.n_failed} 失败` : ""}</span>
+      ${e.review_done ? '<span class="badge brev">已复核</span>' : (e.review_fix ? `<span class="badge bbad">需改 ${e.review_fix}</span>` : "")}
+      <div class="t">${esc(e.instruction)}</div>
+    </div>`).join("");
+  document.querySelectorAll(".ep").forEach(el => el.onclick = () => openEp(el.dataset.s, +el.dataset.i));
+}
+["#fgrade", "#fsucc", "#fsub"].forEach(s => $(s).onchange = renderList);
+$("#fq").oninput = renderList;
+$("#run").onchange = () => { location.hash = ""; loadEpisodes(); };
+
+// ---------------------------------------------------------------- episode
+async function openEp(subset, idx) {
+  CUR = {run: $("#run").value, subset, idx};
+  location.hash = q({run: CUR.run, subset, idx});
+  renderList();
+  $("#hdr").innerHTML = `<h2 class="muted">加载 ${esc(subset)}/${idx} …（第一次打开要转码视频，长视频约 10–30 秒）</h2>`;
+  const [d, rv] = await Promise.all([store.episode(CUR), store.review(CUR)]);
+  if (CUR.subset !== subset || CUR.idx !== idx) return;
+  D = d; REV = rv || {}; REV.subtasks = REV.subtasks || {}; selSid = null;
+  renderHeader(); setupVideos(); renderTable(); renderReview(); drawTimeline();
+  ["#top", "#ctrl", "#legend"].forEach(s => $(s).style.display = "");
+}
+
+function renderHeader() {
+  const qa = D.qa || {};
+  const flags = [];
+  if (qa.sequence_agreement != null) flags.push(`S2 一致度 ${(+qa.sequence_agreement).toFixed(2)}`);
+  if (qa.gripper_consistent != null) flags.push(qa.gripper_consistent ? "抓取数与夹爪一致" : `<span class="bad">抓取数与夹爪不一致</span>`);
+  if (qa.retried_with_hint) flags.push("S2 带提示重试过");
+  if (qa.grip_repaired) flags.push(`夹爪修正删除 ${qa.grip_repaired} 个子任务`);
+  if (D.single_step) flags.push("单步任务");
+  flags.push(`语义进度终值 ${D.semantic.final}`);
+  const hard = (qa.hard_failures || []).map(esc).join("；"), soft = (qa.soft_flags || []).map(esc).join("；");
+  const samples = (qa.decompose_samples || []).map((s, i) => `<li>${s.map(esc).join(" → ")}</li>`).join("");
+  $("#hdr").innerHTML = `
+    <h2><span class="badge b${D.grade}">${D.grade}</span><span class="badge ${D.task_success ? "bok" : "bbad"}">${D.task_success ? "任务成功" : "任务失败"}</span>
+      ${esc(D.uid)} <span class="muted" style="font-weight:normal">${(D.num_frames / D.fps).toFixed(1)} 秒 · ${D.fps} fps</span></h2>
+    <div>指令：<b>${esc(D.instruction)}</b></div>
+    <div class="flags">${flags.join(" · ")}</div>
+    ${hard ? `<div class="flags">硬性问题：<span class="bad">${hard}</span></div>` : ""}
+    ${soft ? `<div class="flags">提示：${soft}</div>` : ""}
+    ${samples ? `<details><summary>S2 的 ${qa.decompose_samples.length} 次采样（看拆分是否稳定）</summary><ol>${samples}</ol></details>` : ""}`;
+}
+
+// ---------------------------------------------------------------- video
+const V = () => $("#vhead");
+function frameNow() {
+  const c = D.clip;
+  return Math.max(0, Math.min(D.num_frames - 1, Math.round(V().currentTime * c.rate) * c.step));
+}
+function seekFrame(f, pause = true) {
+  const t = f / D.clip.step / D.clip.rate;
+  if (pause) pauseAll();
+  document.querySelectorAll("video").forEach(v => { try { v.currentTime = t; } catch (e) {} });
+  update();
+}
+function pauseAll() { document.querySelectorAll("video").forEach(v => v.pause()); $("#play").textContent = "播放"; }
+function playAll() {
+  const r = +$("#rate").value;
+  document.querySelectorAll("video").forEach(v => { v.playbackRate = r; v.currentTime = V().currentTime; v.play(); });
+  $("#play").textContent = "暂停"; loop();
+}
+function setupVideos() {
+  pauseAll();
+  const src = view => store.video(CUR, view);
+  V().src = src("head");
+  V().onloadedmetadata = () => { sizeOverlay(); update(); };
+  V().onseeked = update;
+  V().onended = pauseAll;
+  $("#wrists").innerHTML = D.views.filter(v => v !== "head").map(v =>
+    `<div><video data-view="${esc(v)}" muted playsinline preload="auto" src="${src(v)}"></video><div class="wv">${esc(v)}</div></div>`).join("");
+}
+function loop() {
+  if (V().paused) return;
+  const t = V().currentTime;
+  document.querySelectorAll("#wrists video").forEach(v => { if (Math.abs(v.currentTime - t) > 0.25) v.currentTime = t; });
+  update();
+  requestAnimationFrame(loop);
+}
+$("#play").onclick = () => V().paused ? playAll() : pauseAll();
+$("#rate").onchange = () => document.querySelectorAll("video").forEach(v => v.playbackRate = +$("#rate").value);
+$("#showbox").onchange = () => update();
+document.addEventListener("keydown", e => {
+  if (!D || ["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)) return;
+  const f = frameNow(), s = D.clip.step;
+  if (e.key === " ") { e.preventDefault(); V().paused ? playAll() : pauseAll(); }
+  else if (e.key === "ArrowRight") seekFrame(Math.min(D.num_frames - 1, f + Math.round(D.fps)));
+  else if (e.key === "ArrowLeft") seekFrame(Math.max(0, f - Math.round(D.fps)));
+  else if (e.key === ".") seekFrame(Math.min(D.num_frames - 1, f + s));
+  else if (e.key === ",") seekFrame(Math.max(0, f - s));
+});
+window.addEventListener("resize", () => { if (D) { sizeOverlay(); drawTimeline(); update(); } });
+
+function sizeOverlay() {
+  const v = V(), c = $("#ov");
+  c.width = v.clientWidth; c.height = v.clientHeight;
+}
+function normBox(b, vi, w, h) {
+  if (!b) return null;
+  if (vi.tile_box) {
+    const [x0, y0, x1, y1] = vi.tile_box, sx = w / (x1 - x0), sy = h / (y1 - y0);
+    return [(b[0] - x0) * sx, (b[1] - y0) * sy, (b[2] - x0) * sx, (b[3] - y0) * sy];
+  }
+  const [iw, ih] = vi.image_size || [w, h];
+  return [b[0] * w / iw, b[1] * h / ih, b[2] * w / iw, b[3] * h / ih];
+}
+function drawOverlay(f) {
+  const c = $("#ov"), g = c.getContext("2d");
+  g.clearRect(0, 0, c.width, c.height);
+  if (!$("#showbox").checked) return;
+  const tol = Math.max(D.clip.step, Math.round(D.fps * 0.25));
+  g.lineWidth = 2; g.font = "12px sans-serif";
+  let y = 14;
+  for (const s of D.subtasks) for (const m of MOM) {
+    const kf = (s.keyframes || {})[m];
+    if (!kf || kf.frame == null || Math.abs(kf.frame - f) > tol) continue;
+    const vi = (kf.views || {}).head;
+    g.fillStyle = "rgba(0,0,0,.6)"; g.fillRect(4, y - 12, 230, 16);
+    g.fillStyle = "#fff"; g.fillText(`#${s.id} ${MOMN[m]}：${s.canonical_text}`.slice(0, 40), 8, y); y += 18;
+    if (!vi) continue;
+    for (const [k, col, nm] of [["object_bbox", "#00e676", s.object], ["target_bbox", "#2979ff", s.target]]) {
+      const b = normBox(vi[k], vi, c.width, c.height);
+      if (!b) continue;
+      g.strokeStyle = col; g.strokeRect(b[0], b[1], b[2] - b[0], b[3] - b[1]);
+      g.fillStyle = col; g.fillText(nm || "", b[0] + 2, Math.max(10, b[1] - 3));
+    }
+    for (const p of vi.contact_points || []) {
+      const b = normBox([p[0], p[1], p[0], p[1]], vi, c.width, c.height);
+      g.strokeStyle = "#ff1744"; g.beginPath(); g.arc(b[0], b[1], 5, 0, 7); g.stroke();
+    }
+  }
+}
+
+// ---------------------------------------------------------------- per-frame state
+function seriesAt(name, f) {
+  const fr = D.series.frame, a = D.series[name];
+  if (!a) return null;
+  let lo = 0, hi = fr.length - 1;
+  while (lo < hi) { const m = (lo + hi + 1) >> 1; if (fr[m] <= f) lo = m; else hi = m - 1; }
+  return a[lo];
+}
+function changeAt(f) {
+  const c = D.changes; let r = null;
+  for (const x of c) { if (x.frame <= f) r = x; else break; }
+  return r;
+}
+function phase(s, f) {
+  if (s.t_contact != null && f < s.t_contact) return "接近";
+  if (s.t_effect != null && f < s.t_effect) return "执行中";
+  if (s.t_effect != null) return "生效后收尾";
+  return "进行中";
+}
+function update() {
+  if (!D) return;
+  const f = frameNow();
+  $("#now").textContent = `${(f / D.fps).toFixed(2)} 秒 · 第 ${f} 帧 / ${D.num_frames}`;
+  drawOverlay(f);
+  const arms = D.arms.map(a => {
+    const act = D.subtasks.filter(s => s.arm === a && s.t_start != null && s.t_end != null && s.t_start <= f && f <= s.t_end);
+    const asst = D.subtasks.filter(s => s.assist_arm === a && s.t_start <= f && f <= s.t_end);
+    const body = act.length ? act.map(s => `<div><b>#${s.id}</b> ${esc(s.canonical_text)} <span class="muted">· ${phase(s, f)}</span> <span class="${s.status === "success" ? "ok" : "bad"}">${s.status === "success" ? "成功" : "失败"}</span></div>`).join("")
+      : `<div class="muted">没有子任务</div>`;
+    const as = asst.map(s => `<div class="muted">辅助 #${s.id} ${esc(s.canonical_text)}</div>`).join("");
+    return `<div class="arm" style="border-left:4px solid ${ARMC[a]}"><b style="color:${ARMC[a]}">${ARMN[a]}</b>${body}${as}</div>`;
+  }).join("");
+  const sem = seriesAt("semantic_progress", f), old = seriesAt("atomic_progress", f);
+  const ch = changeAt(f);
+  const plan = ch && ch.atomic_plan_text ? ch.atomic_plan_text.slice(0, 4).map(t => `<li>${esc(t)}</li>`).join("") : "";
+  const mem = ch && ch.atomic_memory_text ? esc(ch.atomic_memory_text) : "<span class='muted'>（空）</span>";
+  $("#state").innerHTML = `${arms}
+    <div style="display:flex;gap:24px;margin:6px 0">
+      <div><div class="muted">语义进度</div><div class="big">${sem == null ? "-" : sem.toFixed(2)}</div></div>
+      <div><div class="muted">旧进度</div><div class="big" style="color:#999">${old == null ? "-" : old.toFixed(2)}</div></div>
+    </div>
+    <div><span class="muted">接下来（Plan）：</span>${plan ? `<ol>${plan}</ol>` : "<span class='muted'>（已全部完成）</span>"}</div>
+    <div style="margin-top:4px"><span class="muted">已完成（Memory）：</span>${mem}</div>`;
+  document.querySelectorAll("#segs tr[data-sid]").forEach(tr => {
+    const s = D.subtasks.find(x => x.id === +tr.dataset.sid);
+    tr.classList.toggle("cur", s.t_start != null && s.t_end != null && s.t_start <= f && f <= s.t_end);
+  });
+  drawPlayhead(f);
+}
+
+// ---------------------------------------------------------------- timeline
+let tlBase = null;
+function drawTimeline() {
+  const cv = $("#tl"), dpr = window.devicePixelRatio || 1;
+  const W = cv.clientWidth || cv.parentElement.clientWidth;
+  const L = 64, R = 10, rowH = 24;
+  const rows = [{key: "composite", name: "合成"}].concat(D.arms.map(a => ({key: a, name: ARMN[a]})));
+  const top = 4, barsH = rows.length * rowH, progH = 120, gripH = 56, axisH = 20;
+  const H = top + barsH + 10 + progH + 8 + gripH + axisH;
+  cv.width = W * dpr; cv.height = H * dpr; cv.style.height = H + "px";
+  const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const N = D.num_frames, x = f => L + (W - L - R) * f / N;
+  layout = {x, L, R, W, N, rows, rowH, top, H, hits: []};
+  g.clearRect(0, 0, W, H); g.font = "11px sans-serif"; g.textBaseline = "middle";
+
+  rows.forEach((r, i) => {
+    const y = top + i * rowH;
+    g.fillStyle = i % 2 ? "#fafafa" : "#f3f3f3"; g.fillRect(L, y, W - L - R, rowH);
+    g.fillStyle = r.key === "composite" ? "#555" : ARMC[r.key]; g.fillText(r.name, 6, y + rowH / 2);
+    if (r.key !== "composite") for (const gr of (D.grasps[r.key] || [])) {
+      g.fillStyle = r.key === "left" ? "rgba(30,136,229,.12)" : "rgba(251,140,0,.14)";
+      g.fillRect(x(gr.close), y, x(gr.open ?? N) - x(gr.close), rowH);
+    }
+  });
+  const bar = (s, y, isComp) => {
+    if (s.t_start == null || s.t_end == null) return;
+    const x0 = x(s.t_start), x1 = Math.max(x(s.t_end), x0 + 2);
+    const ok = s.status === "success";
+    g.fillStyle = ok ? "rgba(67,160,71,.55)" : "rgba(229,57,53,.55)";
+    g.fillRect(x0, y + 3, x1 - x0, rowH - 6);
+    g.strokeStyle = selSid === s.id && !isComp ? "#0d47a1" : "rgba(0,0,0,.5)"; g.lineWidth = selSid === s.id && !isComp ? 2 : 1;
+    g.strokeRect(x0, y + 3, x1 - x0, rowH - 6);
+    const label = `${s.id} ${s.skill}`;
+    if (x1 - x0 > g.measureText(label).width + 4) { g.fillStyle = "#000"; g.fillText(label, x0 + 2, y + rowH / 2); }
+    if (s.t_contact != null) { const cx = x(s.t_contact); g.fillStyle = "#000"; g.beginPath(); g.moveTo(cx - 4, y + 2); g.lineTo(cx + 4, y + 2); g.lineTo(cx, y + 9); g.fill(); }
+    if (s.t_effect != null) { const ex = x(s.t_effect), ey = y + rowH - 6; g.fillStyle = "#000"; g.beginPath(); g.moveTo(ex, ey - 5); g.lineTo(ex + 4, ey); g.lineTo(ex, ey + 5); g.lineTo(ex - 4, ey); g.fill(); }
+    layout.hits.push({x0, x1, y0: y, y1: y + rowH, s, comp: isComp});
+  };
+  D.composite.forEach(s => bar(s, top, true));
+  D.subtasks.forEach(s => { const i = rows.findIndex(r => r.key === s.arm); if (i > 0) bar(s, top + i * rowH, false); });
+
+  // progress panel
+  const py = top + barsH + 10;
+  g.strokeStyle = "#ccc"; g.lineWidth = 1; g.strokeRect(L, py, W - L - R, progH);
+  g.fillStyle = "#555"; g.fillText("进度", 6, py + progH / 2);
+  for (const v of [0.25, 0.5, 0.75]) { g.strokeStyle = "#eee"; g.beginPath(); g.moveTo(L, py + progH * (1 - v)); g.lineTo(W - R, py + progH * (1 - v)); g.stroke(); }
+  g.fillStyle = "#999"; g.fillText("1", L - 10, py + 4); g.fillText("0", L - 10, py + progH - 4);
+  const ret = D.semantic.retract;
+  if (ret) { g.fillStyle = "rgba(38,166,154,.25)"; g.fillRect(x(ret.start), py, Math.max(2, x(ret.end) - x(ret.start)), progH); }
+  for (const m of D.semantic.milestones) {
+    g.strokeStyle = ARMC[m.arm]; g.globalAlpha = .5; g.setLineDash([2, 3]);
+    g.beginPath(); g.moveTo(x(m.done), py); g.lineTo(x(m.done), py + progH); g.stroke();
+    g.setLineDash([]); g.globalAlpha = 1;
+  }
+  const curve = (name, color, w, dash) => {
+    const a = D.series[name]; if (!a) return;
+    g.strokeStyle = color; g.lineWidth = w; g.setLineDash(dash || []); g.beginPath();
+    D.series.frame.forEach((f, i) => { const v = a[i] ?? 0, X = x(f), Y = py + progH * (1 - v); i ? g.lineTo(X, Y) : g.moveTo(X, Y); });
+    g.stroke(); g.setLineDash([]);
+  };
+  curve("atomic_progress", "#9e9e9e", 1.5, [5, 3]);
+  curve("semantic_progress", "#000", 2);
+
+  // gripper panel
+  const gy = py + progH + 8;
+  g.strokeStyle = "#ccc"; g.lineWidth = 1; g.strokeRect(L, gy, W - L - R, gripH);
+  g.fillStyle = "#555"; g.fillText("夹爪开度", 6, gy + gripH / 2);
+  for (const a of D.arms) {
+    const s = D.series["gripper_" + a]; if (!s) continue;
+    g.strokeStyle = ARMC[a]; g.lineWidth = 1.5; g.beginPath();
+    D.series.frame.forEach((f, i) => { const X = x(f), Y = gy + gripH * (1 - Math.max(0, Math.min(1, s[i] ?? 0))); i ? g.lineTo(X, Y) : g.moveTo(X, Y); });
+    g.stroke();
+  }
+  // axis
+  const ay = gy + gripH + 12, dur = N / D.fps;
+  const stepS = [1, 2, 5, 10, 15, 20, 30, 60].find(s => dur / s <= 14) || 120;
+  g.fillStyle = "#666";
+  for (let t = 0; t <= dur; t += stepS) { const X = x(t * D.fps); g.fillRect(X, ay - 8, 1, 4); g.fillText(t + "s", X - 6, ay); }
+  tlBase = g.getImageData(0, 0, cv.width, cv.height);
+  if (V().readyState) drawPlayhead(frameNow());
+}
+function drawPlayhead(f) {
+  if (!tlBase || !layout) return;
+  const cv = $("#tl"), g = cv.getContext("2d"), dpr = window.devicePixelRatio || 1;
+  g.setTransform(1, 0, 0, 1, 0, 0); g.putImageData(tlBase, 0, 0); g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const X = layout.x(f);
+  g.strokeStyle = "#d50000"; g.lineWidth = 1.5; g.beginPath(); g.moveTo(X, 0); g.lineTo(X, layout.H - 14); g.stroke();
+}
+function hitAt(ev) {
+  const r = $("#tl").getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
+  return {mx, my, hit: layout.hits.find(h => mx >= h.x0 && mx <= h.x1 && my >= h.y0 && my <= h.y1)};
+}
+const fmtT = f => f == null ? "-" : (f / D.fps).toFixed(2) + "s";
+$("#tl").onmousemove = ev => {
+  if (!layout) return;
+  const {mx, hit} = hitAt(ev), tip = $("#tip");
+  const f = Math.round((mx - layout.L) / (layout.W - layout.L - layout.R) * layout.N);
+  if (hit) {
+    const s = hit.s;
+    tip.innerHTML = `<b>${hit.comp ? "合成" : "原子"} #${s.id}</b> ${esc(s.canonical_text)}<br>${s.arm ? ARMN[s.arm] : ""}${s.assist_arm ? "（辅助 " + ARMN[s.assist_arm] + "）" : ""} · ${s.status === "success" ? "成功" : "失败"}<br>`
+      + MOM.map(m => `${MOMN[m]} ${fmtT(s[m])}`).join(" · ");
+  } else tip.innerHTML = f >= 0 && f < layout.N ? `${(f / D.fps).toFixed(2)}s · 语义进度 ${(seriesAt("semantic_progress", f) ?? 0).toFixed(2)}` : "";
+  tip.style.display = tip.innerHTML ? "block" : "none";
+  tip.style.left = (ev.clientX + 12) + "px"; tip.style.top = (ev.clientY + 12) + "px";
+};
+$("#tl").onmouseleave = () => $("#tip").style.display = "none";
+$("#tl").onclick = ev => {
+  if (!layout) return;
+  const {mx, hit} = hitAt(ev);
+  if (hit && !hit.comp) { selectSub(hit.s.id); seekFrame(hit.s.t_start); return; }
+  const f = Math.round((mx - layout.L) / (layout.W - layout.L - layout.R) * layout.N);
+  if (f >= 0 && f < layout.N) seekFrame(f);
+};
+
+// ---------------------------------------------------------------- table + keyframes + review
+function renderTable() {
+  const rows = D.subtasks.map(s => {
+    const prov = s.provenance || {}, r = REV.subtasks[s.id] || {};
+    const votes = s.status_votes ? ` <span class="muted" title="${esc(JSON.stringify(s.status_votes))}">投票</span>` : "";
+    const tcell = m => `<td class="tm" data-f="${s[m] ?? ""}" title="来源：${esc(prov[m] || "")}">${fmtT(s[m])}</td>`;
+    return `<tr data-sid="${s.id}">
+      <td>${s.id}</td><td class="${s.arm === "left" ? "armL" : "armR"}">${ARMN[s.arm] || s.arm}${s.assist_arm ? `<br><span class="muted">+${ARMN[s.assist_arm]}</span>` : ""}</td>
+      <td>${esc(s.canonical_text)}${D.variants && D.variants[s.canonical_text] ? `<br><span class="muted" title="${esc(D.variants[s.canonical_text].join("\n"))}">指令改写 ${D.variants[s.canonical_text].length} 条（悬停查看）</span>` : ""}</td>
+      ${MOM.map(tcell).join("")}
+      <td class="${s.status === "success" ? "ok" : "bad"}">${s.status === "success" ? "成功" : "失败"}${votes}</td>
+      <td class="muted">${esc(prov.t_effect || "")}</td>
+      <td class="rv"><button class="okb ${r.status === "ok" ? "on" : ""}" data-v="ok">通过</button><button class="fixb ${r.status === "fix" ? "on" : ""}" data-v="fix">需改</button>
+        <input placeholder="备注" value="${esc(r.note || "")}"></td></tr>`;
+  }).join("");
+  $("#detail").innerHTML = `
+    <h3>原子子任务（${D.subtasks.length}）<span class="muted" style="font-weight:normal;font-size:12px"> 点时间跳到该帧；点行看 4 个关键帧（绿框=物体，蓝框=目标，红圈=接触点）</span></h3>
+    <table id="segs"><tr><th>#</th><th>手</th><th>子任务</th><th>开始</th><th>接触</th><th>生效</th><th>结束</th><th>成败</th><th>生效来源</th><th>复核</th></tr>${rows}</table>
+    <div id="kfs"></div>
+    <details><summary>合成子任务（${D.composite.length}）</summary><table>
+      <tr><th>#</th><th>子任务</th><th>包含原子</th><th>开始</th><th>生效</th><th>结束</th><th>成败</th></tr>
+      ${D.composite.map(c => `<tr><td>${c.id}</td><td>${esc(c.canonical_text)}</td><td>${(c.atomic_ids || []).join(", ")}</td><td class="tm" data-f="${c.t_start ?? ""}">${fmtT(c.t_start)}</td><td class="tm" data-f="${c.t_effect ?? ""}">${fmtT(c.t_effect)}</td><td class="tm" data-f="${c.t_end ?? ""}">${fmtT(c.t_end)}</td><td class="${c.status === "success" ? "ok" : "bad"}">${c.status === "success" ? "成功" : "失败"}</td></tr>`).join("")}
+    </table></details>
+    <details><summary>语义进度里程碑</summary><table>
+      <tr><th>#</th><th>技能</th><th>手</th><th>填充</th><th>起点</th><th>完成</th><th>完成帧来源</th><th>权重</th><th>子阶段</th></tr>
+      ${D.semantic.milestones.map(m => `<tr><td>${m.id}</td><td>${m.skill}</td><td>${ARMN[m.arm]}</td><td>${m.mode}</td><td class="tm" data-f="${m.start}">${fmtT(m.start)}</td><td class="tm" data-f="${m.done}">${fmtT(m.done)}</td><td>${m.done_from}</td><td>${m.weight}</td><td class="muted">${(m.pieces || []).map(p => `${p.name} ${fmtT(p.start)}–${fmtT(p.end)} ×${p.frac.toFixed(2)}`).join("；")}</td></tr>`).join("")}
+      ${D.semantic.retract ? `<tr><td>-</td><td>收回</td><td>-</td><td>time</td><td class="tm" data-f="${D.semantic.retract.start}">${fmtT(D.semantic.retract.start)}</td><td class="tm" data-f="${D.semantic.retract.end}">${fmtT(D.semantic.retract.end)}</td><td>-</td><td>${D.semantic.retract.weight}</td><td></td></tr>` : ""}
+    </table></details>
+    <h3>整条复核</h3>
+    <div id="revbox"></div>`;
+  document.querySelectorAll("td.tm").forEach(td => td.onclick = ev => { ev.stopPropagation(); if (td.dataset.f !== "") seekFrame(+td.dataset.f); });
+  document.querySelectorAll("#segs tr[data-sid]").forEach(tr => {
+    const sid = +tr.dataset.sid;
+    tr.onclick = () => selectSub(sid);
+    tr.querySelectorAll(".rv button").forEach(b => b.onclick = ev => {
+      ev.stopPropagation();
+      const r = REV.subtasks[sid] = REV.subtasks[sid] || {};
+      r.status = r.status === b.dataset.v ? null : b.dataset.v;
+      tr.querySelectorAll(".rv button").forEach(x => x.classList.toggle("on", x.dataset.v === r.status));
+      saveReview();
+    });
+    const inp = tr.querySelector(".rv input");
+    inp.onclick = ev => ev.stopPropagation();
+    inp.oninput = () => { (REV.subtasks[sid] = REV.subtasks[sid] || {}).note = inp.value; saveReview(); };
+  });
+}
+function selectSub(sid) {
+  selSid = sid;
+  document.querySelectorAll("#segs tr[data-sid]").forEach(tr => tr.classList.toggle("selrow", +tr.dataset.sid === sid));
+  const s = D.subtasks.find(x => x.id === sid);
+  const views = ["head"].concat(D.views.filter(v => v !== "head" && Object.values(s.keyframes || {}).some(k => k && k.views && k.views[v])));
+  $("#kfs").innerHTML = `<div style="width:100%"><b>#${s.id} ${esc(s.canonical_text)}</b> 的关键帧</div>` + views.map(v => MOM.map(m => {
+    const kf = (s.keyframes || {})[m], f = kf && kf.frame != null ? kf.frame : s[m];
+    if (f == null) return `<figure><div class="muted" style="height:170px;width:120px;border:1px dashed #ccc;display:flex;align-items:center;justify-content:center">${MOMN[m]}：无</div></figure>`;
+    return `<figure data-f="${f}"><img loading="lazy" src="${store.kf(CUR, sid, m, v)}"><figcaption>${esc(v)} · ${MOMN[m]} ${fmtT(f)}</figcaption></figure>`;
+  }).join("")).join("");
+  document.querySelectorAll("#kfs figure[data-f]").forEach(el => el.onclick = () => seekFrame(+el.dataset.f));
+  drawTimeline();
+}
+function renderReview() {
+  $("#revbox").innerHTML = `<textarea id="revnote" rows="2" style="width:100%" placeholder="整条备注（拆分错误、漏步骤、时间不准……）">${esc(REV.note || "")}</textarea>
+    <label><input type="checkbox" id="revdone" ${REV.done ? "checked" : ""}> 这条已复核完</label> <span id="revst" class="muted"></span>`;
+  $("#revnote").oninput = () => { REV.note = $("#revnote").value; saveReview(); };
+  $("#revdone").onchange = () => { REV.done = $("#revdone").checked; saveReview(true); };
+}
+function saveReview(now) {
+  clearTimeout(revTimer);
+  const go = async () => {
+    REV.updated = new Date().toISOString();
+    await store.save(CUR, REV);
+    $("#revst").textContent = "已保存 " + new Date().toLocaleTimeString();
+    const e = EPS.find(x => x.subset === CUR.subset && x.idx === CUR.idx);
+    if (e) { const v = Object.values(REV.subtasks).map(x => x.status); e.review_done = !!REV.done; e.review_fix = v.filter(x => x === "fix").length; renderList(); }
+  };
+  revTimer = setTimeout(go, now ? 0 : 600);
+}
+
+loadRuns();
+</script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>标注流程逐步拆解 · AgiBot 352/0 · 原产线 vs Flora 线</title>
+<style>
+  :root { --b:#0a84ff; --g:#34c759; --o:#ff9500; --bg:#f5f5f7; --card:#fff; --mut:#6e6e73; }
+  * { box-sizing: border-box; }
+  body { margin:0; font: 14px/1.6 -apple-system, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; background:var(--bg); color:#1d1d1f; }
+  header { background:#1d1d1f; color:#fff; padding:14px 24px; position:sticky; top:0; z-index:10; }
+  header h1 { margin:0; font-size:18px; }
+  header .sub { color:#c7c7cc; font-size:12px; }
+  nav { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+  nav button { background:#3a3a3c; color:#fff; border:0; padding:6px 14px; border-radius:16px; cursor:pointer; font-size:13px; }
+  nav button.on { background:var(--b); }
+  main { max-width:1280px; margin:0 auto; padding:18px 20px 80px; }
+  .toc { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+  .toc a { background:#fff; border:1px solid #d2d2d7; padding:3px 10px; border-radius:12px; text-decoration:none; color:#1d1d1f; font-size:12px; }
+  section.step { background:var(--card); border-radius:12px; padding:16px 20px; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,.06); }
+  section.step h2 { margin:0 0 6px; font-size:17px; }
+  .badges span { display:inline-block; font-size:12px; padding:1px 8px; border-radius:10px; margin-right:6px; background:#e8e8ed; }
+  .badges .m { background:#e1efff; color:#0057b8; }
+  .what { margin:8px 0; font-size:14.5px; }
+  .how { margin:6px 0 10px 0; padding-left:20px; }
+  .how li { margin:3px 0; }
+  .imgs { display:flex; flex-wrap:wrap; gap:10px; margin:8px 0; }
+  .imgs figure { margin:0; max-width:100%; }
+  .imgs img, .imgs video { max-width:100%; border:1px solid #d2d2d7; border-radius:6px; background:#000; }
+  .imgs figcaption { font-size:12px; color:var(--mut); max-width:640px; }
+  details { margin:6px 0; }
+  details > summary { cursor:pointer; color:var(--b); font-size:13px; }
+  pre { background:#f2f2f7; padding:10px; border-radius:6px; overflow:auto; max-height:520px; font-size:12px; white-space:pre-wrap; word-break:break-word; margin:4px 0; }
+  .call { border:1px solid #d2d2d7; border-radius:8px; padding:10px 12px; margin:8px 0; background:#fbfbfd; }
+  .call .meta { font-size:12px; color:#3a3a3c; margin-bottom:6px; }
+  .call .meta b { color:#fff; padding:1px 7px; border-radius:8px; margin-right:6px; }
+  .Qwen { background:var(--b); } .SAM { background:#af52de; } .bge-m3 { background:#5e5ce6; }
+  .Flora-TempSeg, .Flora-Captioner, .Flora-Rewarder { background:var(--g); }
+  .io { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+  .io > div > .lab { font-size:12px; font-weight:600; color:var(--mut); margin-bottom:2px; }
+  @media (max-width: 900px) { .io { grid-template-columns: 1fr; } }
+  .part { margin:4px 0; }
+  .part img { max-width:100%; border-radius:4px; border:1px solid #d2d2d7; }
+  .part .note { font-size:12px; color:var(--mut); }
+  .frames { display:flex; flex-wrap:wrap; gap:3px; }
+  .frames img { width:120px; }
+  table { border-collapse:collapse; width:100%; font-size:12.5px; margin:6px 0; }
+  th, td { border:1px solid #d2d2d7; padding:4px 6px; text-align:left; vertical-align:top; }
+  th { background:#f2f2f7; }
+  .more { background:none; border:1px dashed var(--b); color:var(--b); border-radius:6px; padding:4px 10px; cursor:pointer; margin:4px 0; }
+  .kv { display:grid; grid-template-columns: 140px 1fr; gap:4px 12px; font-size:13.5px; }
+  .kv div:nth-child(odd) { color:var(--mut); }
+  .flow { display:flex; flex-wrap:wrap; align-items:center; gap:4px; font-size:13px; margin:6px 0; }
+  .flow span { background:#e1efff; padding:3px 8px; border-radius:6px; }
+  .flow.f span { background:#e3f9e8; }
+  .flow i { color:var(--mut); font-style:normal; }
+</style>
+</head>
+<body>
+<header>
+  <h1>具身数据自动标注 · 一条数据逐步拆解（原产线 Qwen 版 vs Flora 版）</h1>
+  <div class="sub" id="sub"></div>
+  <nav id="nav"></nav>
+</header>
+<main id="main"></main>
+<script src="data.js"></script>
+<script>
+const D = window.DATA;
+const $ = (h) => { const t = document.createElement('template'); t.innerHTML = h.trim(); return t.content.firstChild; };
+const esc = (s) => String(s ?? '').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const js = (o) => esc(JSON.stringify(o, null, 1));
+const fr = (f) => f == null ? '—' : `${f}（${(f / D.episode.fps).toFixed(1)}s）`;
+
+function longText(t, n = 700) {
+  if (t.length <= n) return `<pre>${esc(t)}</pre>`;
+  return `<pre>${esc(t.slice(0, n))} …</pre><details><summary>展开完整文本（${t.length} 字符）</summary><pre>${esc(t)}</pre></details>`;
+}
+function part(p) {
+  if (p.t === 'text') return `<div class="part">${longText(p.text)}</div>`;
+  if (p.t === 'image') return `<div class="part"><img src="${p.src}" loading="lazy"><div class="note">${esc(p.note)}</div></div>`;
+  if (p.t === 'video') return `<div class="part"><video src="${p.src}" controls preload="none" style="max-width:100%"></video><div class="note">${esc(p.note)}</div><img src="${p.sheet}" loading="lazy"></div>`;
+  if (p.t === 'frames') return `<div class="part"><div class="note">${esc(p.note)}</div><img src="${p.sheet}" loading="lazy">
+      <details><summary>查看全部 ${p.frames.length} 帧（模型实际收到的每一帧）</summary><div class="frames">${p.frames.map(f => `<img src="${f}" loading="lazy">`).join('')}</div></details></div>`;
+  return '';
+}
+function card(c, i) {
+  const cls = c.model.split(' ')[0];
+  let out = `<pre>${js(c.output)}</pre>`;
+  if (c.output_image) out += `<img src="${c.output_image}" loading="lazy" style="max-width:100%"><div class="note" style="font-size:12px;color:#6e6e73">绿框：分数 ≥ 0.3 的检出；红框：低分候选（每个提示最多画 4 个）</div>`;
+  if (typeof c.output === 'object' && c.output && Object.values(c.output).some(v => typeof v === 'string' && v.length > 1500)) {
+    out = Object.entries(c.output).map(([k, v]) => `<div class="lab">${esc(k)}</div>` + (typeof v === 'string' ? longText(v, 1500) : `<pre>${js(v)}</pre>`)).join('');
+  }
+  return `<div class="call"><div class="meta"><b class="${cls}">${esc(c.model)}</b>#${i + 1} · ${esc(c.meta)}</div>
+    <div class="io"><div><div class="lab">输入（按发送顺序）</div>${c.parts.map(part).join('')}
+      ${c.schema ? `<details><summary>输出被约束的 JSON schema</summary><pre>${js(c.schema)}</pre></details>` : ''}</div>
+    <div><div class="lab">输出</div>${out}</div></div></div>`;
+}
+function cards(list, show = 3) {
+  if (!list || !list.length) return '';
+  const head = list.slice(0, show).map(card).join('');
+  if (list.length <= show) return head;
+  const id = 'c' + Math.random().toString(36).slice(2);
+  window[id] = list;
+  return head + `<button class="more" onclick="this.outerHTML = window['${id}'].slice(${show}).map((c, k) => card(c, k + ${show})).join('')">展开其余 ${list.length - show} 次调用</button>`;
+}
+function step(s) {
+  let h = `<section class="step" id="${s.id}"><h2>${esc(s.title)}</h2>
+    <div class="badges"><span class="m">${esc(s.model || '')}</span><span>代码：${esc(s.code)}</span></div>
+    <div class="what"><b>做什么：</b>${esc(s.what)}</div>
+    <div><b>怎么执行：</b></div><ol class="how">${s.how.map(x => `<li>${esc(x)}</li>`).join('')}</ol>`;
+  if (s.images) h += `<div class="imgs">${s.images.map(i => `<figure><img src="${i.src}" loading="lazy"><figcaption>${esc(i.cap)}</figcaption></figure>`).join('')}</div>`;
+  if (s.videos) h += `<div class="imgs">${s.videos.map(v => `<figure><video src="${v.src}" controls preload="metadata" style="max-height:300px"></video><figcaption>${esc(v.cap)}</figcaption></figure>`).join('')}</div>`;
+  if (s.calls && s.calls.length) h += `<h3 style="font-size:15px;margin:12px 0 4px">真实调用记录（共 ${s.calls.length} 次）</h3>` + cards(s.calls);
+  if (s.calls2) for (const [k, v] of Object.entries(s.calls2)) h += `<details><summary>${esc(k)}（${v.length} 次）</summary>${cards(v, v.length)}</details>`;
+  if (s.stage) h += `<details open><summary>这一步的返回值（下一步的输入）</summary><pre>${js(s.stage)}</pre></details>`;
+  if (s.extra) for (const [k, v] of Object.entries(s.extra)) h += `<details><summary>${esc(k)}</summary><pre>${js(v)}</pre></details>`;
+  if (s.files) h += `<div>文件：${s.files.map(f => `<a href="${f}" target="_blank">${f.split('/').pop()}</a>`).join('，')}</div>`;
+  return h + '</section>';
+}
+function subTable(sts, withCap) {
+  return `<table><tr><th>#</th><th>手</th><th>技能</th><th>规范文本</th><th>t_start</th><th>t_contact</th><th>t_effect</th><th>t_end</th><th>成败</th>${withCap ? '<th>S9 描述</th>' : ''}</tr>` +
+    sts.map(s => `<tr><td>${s.id}</td><td>${s.arm}</td><td>${s.skill}</td><td>${esc(s.canonical_text)}</td><td>${fr(s.t_start)}</td><td>${fr(s.t_contact)}</td><td>${fr(s.t_effect)}</td><td>${fr(s.t_end)}</td><td>${s.status}</td>${withCap ? `<td>${esc(s.caption || '')}</td>` : ''}</tr>`).join('') + '</table>';
+}
+
+const pages = {
+  overview() {
+    const e = D.episode, m = D.migration;
+    return `<section class="step"><h2>这条数据</h2><div class="kv">
+      <div>数据集</div><div>${esc(e.dataset)}，任务 ${e.task}，episode ${e.episode_index}</div>
+      <div>原始位置</div><div>${esc(e.source)}</div>
+      <div>任务指令</div><div>${esc(e.instruction)}</div>
+      <div>长度</div><div>${e.num_frames} 帧，${e.fps} fps，${e.seconds} 秒；三路相机 head / wrist_left / wrist_right + 每帧末端位置和夹爪开度</div></div>
+      <div class="imgs">${Object.entries(e.raw).map(([k, v]) => `<figure><video src="${v.video}" controls preload="metadata" style="max-height:240px"></video><figcaption>原始 ${k}（${v.size.join('x')}）</figcaption></figure>`).join('')}</div>
+      <h3 style="font-size:15px">数据集自带的人工标注（只用于对照，产线不读）</h3>
+      <table><tr><th>起</th><th>止</th><th>文本</th><th>技能</th></tr>${e.official.map(g => `<tr><td>${fr(g.s)}</td><td>${fr(g.e)}</td><td>${esc(g.text)}</td><td>${esc(g.skill || g.arm || '')}</td></tr>`).join('')}</table>
+    </section>
+    <section class="step"><h2>标注要产出什么</h2><ol class="how">
+      <li>子任务时间轴：每个原子动作的技能、物体、目标、哪只手，4 个时刻 t_start（开始动）/ t_contact（碰到或夹住）/ t_effect（效果出现）/ t_end（动作结束），以及成败。</li>
+      <li>合并子任务（pick+place → put）和逐帧 Plan / Progress / Memory（parquet，每帧一行）。</li>
+      <li>关键帧 2D 框和接触点、指令变体（12 英 + 8 中）、质检等级 A / B / C。</li></ol>
+      <div><b>原产线（Qwen 版）</b></div>
+      <div class="flow"><span>S0 接入 + T 形拼图</span><i>→</i><span>词表</span><i>→</i><span>S1 运动学</span><i>→</i><span>S2 Qwen 看视频拆步骤</span><i>→</i><span>S3 Qwen 估时间 + 吸附</span><i>→</i><span>S4 效果与成败</span><i>→</i><span>S5 推导</span><i>→</i><span>S6 框</span><i>→</i><span>S7 变体</span><i>→</i><span>S8 质检</span></div>
+      <div><b>Flora 线</b>（只替换 S2 / S3 的来源，S4–S8 相同，另加 S9 描述和 Rewarder 复核）</div>
+      <div class="flow f"><span>F0 切三路原始视频</span><i>→</i><span>F1 TempSeg 切时间段</span><i>→</i><span>F2 Captioner 每段一句话</span><i>→</i><span>F3 Qwen 纯文本结构化</span><i>→</i><span>F4 区间吸附（无模型）</span><i>→</i><span>S4–S8（同原产线）</span><i>→</i><span>S9 描述</span><i>→</i><span>F7 Rewarder 复核 C 级</span></div>
+    </section>
+    <section class="step"><h2>迁移情况</h2><div class="kv">
+      <div>原始目录</div><div>${esc(m.originals)}</div><div>代码</div><div>${esc(m.code)}</div>
+      <div>环境</div><div>${esc(m.env)}</div><div>权重</div><div>${esc(m.weights)}</div><div>本页记录</div><div>${esc(m.trace)}</div></div></section>`;
+  },
+  qwen() { return `<div class="toc">${D.qwen.map(s => `<a href="#${s.id}">${esc(s.title.split('　')[0])}</a>`).join('')}</div>` + D.qwen.map(step).join(''); },
+  flora() { return `<div class="toc">${D.flora.map(s => `<a href="#${s.id}">${esc(s.title.split('　')[0])}</a>`).join('')}</div>` + D.flora.map(step).join(''); },
+  compare() {
+    const r = D.results;
+    const row = (L) => `<tr><td>${L}</td><td>${r[L].grade}</td><td>${r[L].task_success}</td><td>${esc((r[L].soft_flags || []).join(', '))}</td><td>${esc(JSON.stringify(r[L].cost || {}))}</td></tr>`;
+    return `<section class="step"><h2>时间轴对比</h2><div class="imgs"><figure><img src="a/timeline.png"></figure></div>
+      <table><tr><th>线</th><th>等级</th><th>任务成功</th><th>软提示</th><th>成本记录（cost 字段）</th></tr>${row('qwen')}${row('flora')}</table></section>
+      <section class="step"><h2>原产线（Qwen）最终子任务</h2>${subTable(r.qwen.subtasks)}</section>
+      <section class="step"><h2>Flora 线最终子任务</h2>${subTable(r.flora.subtasks, true)}</section>
+      <section class="step"><h2>这条数据上两条线的区别</h2><ol class="how">
+        <li>步骤和技能完全一样（open → pick → place → close），手臂也一样；place 的关系词不同（next to / left of）。</li>
+        <li>拆步骤的方式：原产线 S2 让 Qwen 看 2 fps 视频、采样 3 次投票（这次还因为抓取次数和夹爪对不上重试了一次，共 7 次 Qwen 调用）；Flora 线由 TempSeg + Captioner 先给“区间 + 一句话”，Qwen 只读文字做 1 次结构化。</li>
+        <li>定时间的方式：原产线 S3 再让 Qwen 看视频估秒数；Flora 线直接用 TempSeg 区间，没有这次调用。两条线最后都吸附到夹爪 / 运动事件，所以 pick 的接触 610、抬起 666，place 的张开 921 完全相同。</li>
+        <li>边界差异：Flora 把开头静止也算进开门（t_start 0 vs 45）、开门的 t_effect 晚（454 vs 289），pick 结束更早（693 vs 869，紧接着就是 place）。</li>        <li>和数据集自带人工标注比：官方是 开门 0–540、拿可乐 540–736、放到桌上 736–940、右手推门 940–1171。两条线都把开门结束放在 599（夹爪开始闭合前），比官方晚 2 秒；官方最后一步叫 push，两条线叫 close；官方说放“on the table”，两条线说放在冰箱旁边，属于措辞和物体关系上的差异。</li>
+        <li>成本（见上表 cost 字段）：原产线主流程 34 次 Qwen 调用、37,466 输入 tokens、31.9 秒；Flora 线主流程 36 次 Qwen 调用（多了 S9 描述）、22,328 输入 tokens、20.0 秒。但 Flora 线另外要跑 TempSeg（这条 5 个窗口推理 30.4 秒，不含模型加载）、Captioner，以及可选的 Rewarder。</li>
+      </ol></section>`;
+  },
+};
+const nav = document.getElementById('nav');
+const names = { overview: '总览 / 迁移情况', qwen: '原产线（Qwen）逐步', flora: 'Flora 线逐步', compare: '结果对比' };
+document.getElementById('sub').textContent = `AgiBot World Beta 任务 ${D.episode.task} / episode ${D.episode.episode_index} · “${D.episode.instruction}” · 每一步都是真实运行记录（输入的文字、图片、视频和模型输出）`;
+function show(k) {
+  document.getElementById('main').innerHTML = pages[k]();
+  [...nav.children].forEach(b => b.classList.toggle('on', b.dataset.k === k));
+  history.replaceState(null, '', '#' + k);
+  window.scrollTo(0, 0);
+}
+for (const k of Object.keys(pages)) { const b = $(`<button data-k="${k}">${names[k]}</button>`); b.onclick = () => show(k); nav.appendChild(b); }
+const start = location.hash.slice(1);
+show(start in pages ? start : 'overview');
+</script>
+</body>
+</html>
